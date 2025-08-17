@@ -1,0 +1,1061 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PassX Pro - Advanced Password Manager</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #667eea 100%);
+            --secondary-gradient: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            --accent-gradient: linear-gradient(45deg, #00f260, #0575e6);
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --text-primary: #333;
+            --text-secondary: rgba(255, 255, 255, 0.9);
+            --shadow-light: 0 8px 32px rgba(0, 0, 0, 0.1);
+            --shadow-medium: 0 15px 40px rgba(0, 0, 0, 0.15);
+            --shadow-heavy: 0 25px 60px rgba(0, 0, 0, 0.2);
+            --border-radius: 20px;
+            --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--primary-gradient);
+            background-size: 400% 400%;
+            animation: gradientShift 10s ease infinite;
+            min-height: 100vh;
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        /* Enhanced Navigation */
+        nav {
+            backdrop-filter: blur(25px) saturate(1.5);
+            background: var(--glass-bg);
+            border-bottom: 1px solid var(--glass-border);
+            padding: 1.2rem 2.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: var(--shadow-light);
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: 900;
+            background: var(--secondary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: logoFloat 4s ease-in-out infinite;
+            text-shadow: 0 0 30px rgba(255, 107, 107, 0.3);
+            letter-spacing: -0.5px;
+        }
+
+        @keyframes logoFloat {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            33% { transform: translateY(-8px) rotate(1deg); }
+            66% { transform: translateY(-4px) rotate(-1deg); }
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 1.5rem;
+        }
+
+        nav li {
+            color: white;
+            cursor: pointer;
+            padding: 0.7rem 1.5rem;
+            border-radius: 25px;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            font-weight: 500;
+        }
+
+        nav li::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: var(--secondary-gradient);
+            transition: var(--transition);
+            z-index: -1;
+        }
+
+        nav li:hover::before {
+            left: 0;
+        }
+
+        nav li:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(255, 255, 255, 0.2);
+        }
+
+        /* Enhanced Container */
+        .container {
+            max-width: 1300px;
+            margin: 3rem auto;
+            padding: 0 2.5rem;
+        }
+
+        .hero-section {
+            text-align: center;
+            margin-bottom: 4rem;
+            position: relative;
+        }
+
+        .hero-title {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 800;
+            background: linear-gradient(45deg, #fff, #f0f0f0, #fff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1.5rem;
+            text-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+            animation: titlePulse 3s ease-in-out infinite;
+        }
+
+        @keyframes titlePulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+
+        .hero-subtitle {
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            max-width: 650px;
+            margin: 0 auto 2rem;
+            font-weight: 300;
+            line-height: 1.7;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            text-align: center;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--secondary-gradient);
+            transform: translateX(-100%);
+            transition: var(--transition);
+        }
+
+        .stat-card:hover::before {
+            transform: translateX(0);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Enhanced Section Headers */
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            color: white;
+            font-size: 2rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .section-icon {
+            background: var(--accent-gradient);
+            padding: 0.8rem;
+            border-radius: 15px;
+            color: white;
+        }
+
+        #alert {
+            background: var(--accent-gradient);
+            color: white;
+            padding: 0.5rem 1.5rem;
+            border-radius: 25px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            opacity: 0;
+            transform: scale(0.8) translateY(-10px);
+            transition: var(--transition);
+            box-shadow: var(--shadow-light);
+        }
+
+        #alert.show {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+        }
+
+        /* Enhanced Table Container */
+        .table-container {
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: var(--border-radius);
+            padding: 2.5rem;
+            margin-bottom: 4rem;
+            backdrop-filter: blur(30px);
+            box-shadow: var(--shadow-heavy);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .table-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--primary-gradient);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: var(--shadow-light);
+        }
+
+        th {
+            background: var(--primary-gradient);
+            color: white;
+            padding: 1.5rem;
+            font-weight: 600;
+            text-align: left;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            position: relative;
+        }
+
+        th::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        td {
+            padding: 1.5rem;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+            transition: var(--transition);
+            vertical-align: middle;
+        }
+
+        tr {
+            transition: var(--transition);
+        }
+
+        tr:hover {
+            background: linear-gradient(90deg, rgba(102, 126, 234, 0.08), rgba(102, 126, 234, 0.12));
+            transform: translateX(5px);
+        }
+
+        .password-field {
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            color: #666;
+            margin-right: 1rem;
+        }
+
+        /* Enhanced Buttons */
+        .copy-btn, .delete-btn, .btn {
+            border: none;
+            padding: 0.7rem 1.5rem;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .copy-btn {
+            background: var(--primary-gradient);
+            color: white;
+            margin-right: 0.5rem;
+        }
+
+        .copy-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .delete-btn {
+            background: linear-gradient(45deg, #ff6b6b, #ff5252);
+            color: white;
+        }
+
+        .delete-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(255, 107, 107, 0.4);
+        }
+
+        /* Enhanced Form */
+        .form-container {
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: var(--border-radius);
+            padding: 3rem;
+            backdrop-filter: blur(30px);
+            box-shadow: var(--shadow-heavy);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .form-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--secondary-gradient);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+
+        label {
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            padding: 1.2rem 1.5rem;
+            border: 2px solid rgba(102, 126, 234, 0.2);
+            border-radius: 15px;
+            font-size: 1rem;
+            transition: var(--transition);
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+        }
+
+        input[type="text"]:focus,
+        input[type="password"]:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 6px rgba(102, 126, 234, 0.1);
+            transform: translateY(-2px);
+            background: white;
+        }
+
+        .btn {
+            background: var(--primary-gradient);
+            color: white;
+            padding: 1.2rem 2.5rem;
+            border-radius: 15px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: var(--shadow-light);
+            justify-self: center;
+            min-width: 200px;
+        }
+
+        .btn:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:active {
+            transform: translateY(-2px);
+        }
+
+        /* Enhanced Particles */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            animation: particleDrift 25s infinite linear;
+        }
+
+        .particle:nth-child(odd) {
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.4), transparent);
+            width: 6px;
+            height: 6px;
+        }
+
+        .particle:nth-child(even) {
+            background: radial-gradient(circle, rgba(255, 107, 107, 0.3), transparent);
+            width: 4px;
+            height: 4px;
+        }
+
+        @keyframes particleDrift {
+            from {
+                transform: translateY(100vh) rotate(0deg) scale(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+                transform: translateY(90vh) rotate(36deg) scale(1);
+            }
+            90% {
+                opacity: 1;
+                transform: translateY(-10vh) rotate(324deg) scale(1);
+            }
+            to {
+                transform: translateY(-100vh) rotate(360deg) scale(0);
+                opacity: 0;
+            }
+        }
+
+        /* Enhanced Responsive Design */
+        @media (max-width: 1024px) {
+            .container { padding: 0 2rem; }
+            .table-container, .form-container { padding: 2rem; }
+        }
+
+        @media (max-width: 768px) {
+            .container { padding: 0 1.5rem; }
+            
+            nav {
+                padding: 1rem 1.5rem;
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            nav ul { gap: 1rem; }
+            
+            .hero-title { font-size: 2.5rem; }
+            
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+            
+            .form-grid { grid-template-columns: 1fr; }
+            
+            table { font-size: 0.85rem; }
+            
+            th, td { padding: 1rem 0.7rem; }
+            
+            .table-container, .form-container { 
+                padding: 1.5rem; 
+                margin-bottom: 2rem;
+            }
+            
+            .copy-btn, .delete-btn {
+                padding: 0.5rem 1rem;
+                font-size: 0.8rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stats-grid { grid-template-columns: 1fr; }
+            .hero-title { font-size: 2rem; }
+            .section-title { font-size: 1.5rem; }
+        }
+
+        /* Loading Animation */
+        .loading {
+            opacity: 0;
+            animation: fadeInUp 0.8s ease forwards;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Scroll animations */
+        .scroll-animate {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .scroll-animate.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <div class="particles"></div>
+    
+    <nav>
+        <div class="logo">
+            <i class="fas fa-shield-alt"></i>
+            PassX Pro
+        </div>
+        <ul>
+            <li><i class="fas fa-home"></i> Home</li>
+            <li><i class="fas fa-info-circle"></i> About</li>
+            <li><i class="fas fa-envelope"></i> Contact</li>
+        </ul>
+    </nav>
+    
+    <div class="container">
+        <div class="hero-section loading">
+            <h1 class="hero-title">Advanced Password Management</h1>
+            <p class="hero-subtitle">Experience the next generation of password security with military-grade encryption, seamless synchronization, and intelligent threat detection. Your digital life has never been more secure.</p>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number">256</div>
+                    <div class="stat-label">Bit Encryption</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">99.9%</div>
+                    <div class="stat-label">Uptime</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">2M+</div>
+                    <div class="stat-label">Users Trust Us</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">24/7</div>
+                    <div class="stat-label">Support</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section-header scroll-animate">
+            <h2 class="section-title">
+                <span class="section-icon"><i class="fas fa-key"></i></span>
+                Your Passwords
+            </h2>
+            <span id="alert"><i class="fas fa-check-circle"></i> Copied!</span>
+        </div>
+        
+        <div class="table-container scroll-animate">
+            <table id="passwordTable">
+                <thead>
+                    <tr>
+                        <th><i class="fas fa-globe"></i> Website</th>
+                        <th><i class="fas fa-user"></i> Username</th>
+                        <th><i class="fas fa-lock"></i> Password</th>
+                        <th><i class="fas fa-cogs"></i> Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <i class="fab fa-github" style="color: #333; margin-right: 0.5rem;"></i>
+                            github.com
+                        </td>
+                        <td>john_doe</td>
+                        <td>
+                            <span class="password-field">••••••••••••</span>
+                            <button class="copy-btn" onclick="copyPassword('MySecurePass123!')">
+                                <i class="fas fa-copy"></i> Copy
+                            </button>
+                        </td>
+                        <td>
+                            <button class="delete-btn" onclick="deletePassword(this)">
+                                <i class="fas fa-trash"></i> Delete
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <i class="fab fa-google" style="color: #ea4335; margin-right: 0.5rem;"></i>
+                            gmail.com
+                        </td>
+                        <td>johndoe@gmail.com</td>
+                        <td>
+                            <span class="password-field">••••••••••••</span>
+                            <button class="copy-btn" onclick="copyPassword('EmailPass456!')">
+                                <i class="fas fa-copy"></i> Copy
+                            </button>
+                        </td>
+                        <td>
+                            <button class="delete-btn" onclick="deletePassword(this)">
+                                <i class="fas fa-trash"></i> Delete
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <i class="fab fa-facebook" style="color: #1877f2; margin-right: 0.5rem;"></i>
+                            facebook.com
+                        </td>
+                        <td>john.doe.2024</td>
+                        <td>
+                            <span class="password-field">••••••••••••</span>
+                            <button class="copy-btn" onclick="copyPassword('SocialPass789!')">
+                                <i class="fas fa-copy"></i> Copy
+                            </button>
+                        </td>
+                        <td>
+                            <button class="delete-btn" onclick="deletePassword(this)">
+                                <i class="fas fa-trash"></i> Delete
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="section-header scroll-animate">
+            <h2 class="section-title">
+                <span class="section-icon"><i class="fas fa-plus-circle"></i></span>
+                Add New Password
+            </h2>
+        </div>
+        
+        <div class="form-container scroll-animate">
+            <form id="passwordForm" onsubmit="addPassword(event)">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="website">
+                            <i class="fas fa-globe"></i>
+                            Website
+                        </label>
+                        <input type="text" id="website" name="website" placeholder="Enter website URL (e.g., github.com)" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="username">
+                            <i class="fas fa-user"></i>
+                            Username
+                        </label>
+                        <input type="text" id="username" name="username" placeholder="Enter username or email" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="password">
+                            <i class="fas fa-lock"></i>
+                            Password
+                        </label>
+                        <input type="password" id="password" name="password" placeholder="Enter secure password" required>
+                    </div>
+                </div>
+                
+                <button class="btn" type="submit">
+                    <i class="fas fa-shield-alt"></i>
+                    Add Password
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Enhanced particle system
+        function createParticles() {
+            const particlesContainer = document.querySelector('.particles');
+            for (let i = 0; i < 30; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 25 + 's';
+                particle.style.animationDuration = (20 + Math.random() * 15) + 's';
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // Enhanced copy password function
+        function copyPassword(password) {
+            navigator.clipboard.writeText(password).then(() => {
+                const alert = document.getElementById('alert');
+                alert.classList.add('show');
+                
+                // Add ripple effect
+                const ripple = document.createElement('div');
+                ripple.style.cssText = `
+                    position: absolute;
+                    border-radius: 50%;
+                    background: rgba(255, 255, 255, 0.3);
+                    width: 100px;
+                    height: 100px;
+                    left: 50%;
+                    top: 50%;
+                    transform: translate(-50%, -50%) scale(0);
+                    animation: ripple 0.6s ease-out;
+                    pointer-events: none;
+                `;
+                alert.style.position = 'relative';
+                alert.appendChild(ripple);
+                
+                setTimeout(() => {
+                    alert.classList.remove('show');
+                    if (ripple.parentNode) {
+                        ripple.remove();
+                    }
+                }, 2500);
+            }).catch(err => {
+                console.error('Failed to copy password: ', err);
+            });
+        }
+
+        // Enhanced delete function with confirmation
+        function deletePassword(button) {
+            const row = button.closest('tr');
+            const website = row.children[0].textContent.trim();
+            
+            if (confirm(`Are you sure you want to delete the password for ${website}?`)) {
+                row.style.transition = 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)';
+                row.style.opacity = '0';
+                row.style.transform = 'translateX(-50px) scale(0.8)';
+                row.style.background = 'linear-gradient(90deg, rgba(255, 107, 107, 0.1), rgba(255, 82, 82, 0.1))';
+                
+                setTimeout(() => {
+                    row.remove();
+                }, 500);
+            }
+        }
+
+        // Enhanced add password function
+        function addPassword(event) {
+            event.preventDefault();
+            
+            const website = document.getElementById('website').value;
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            // Get appropriate icon for website
+            const getWebsiteIcon = (site) => {
+                const domain = site.toLowerCase();
+                if (domain.includes('github')) return '<i class="fab fa-github" style="color: #333;"></i>';
+                if (domain.includes('gmail') || domain.includes('google')) return '<i class="fab fa-google" style="color: #ea4335;"></i>';
+                if (domain.includes('facebook')) return '<i class="fab fa-facebook" style="color: #1877f2;"></i>';
+                if (domain.includes('twitter')) return '<i class="fab fa-twitter" style="color: #1da1f2;"></i>';
+                if (domain.includes('linkedin')) return '<i class="fab fa-linkedin" style="color: #0077b5;"></i>';
+                if (domain.includes('instagram')) return '<i class="fab fa-instagram" style="color: #e4405f;"></i>';
+                return '<i class="fas fa-globe" style="color: #667eea;"></i>';
+            };
+            
+            const tableBody = document.querySelector('#passwordTable tbody');
+            const newRow = document.createElement('tr');
+            
+            newRow.innerHTML = `
+                <td>
+                    ${getWebsiteIcon(website)}
+                    ${website}
+                </td>
+                <td>${username}</td>
+                <td>
+                    <span class="password-field">••••••••••••</span>
+                    <button class="copy-btn" onclick="copyPassword('${password.replace(/'/g, "\\'")}')">
+                        <i class="fas fa-copy"></i> Copy
+                    </button>
+                </td>
+                <td>
+                    <button class="delete-btn" onclick="deletePassword(this)">
+                        <i class="fas fa-trash"></i> Delete
+                    </button>
+                </td>
+            `;
+            
+            // Enhanced add animation
+            newRow.style.opacity = '0';
+            newRow.style.transform = 'translateY(30px) scale(0.9)';
+            newRow.style.background = 'linear-gradient(90deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1))';
+            tableBody.appendChild(newRow);
+            
+            setTimeout(() => {
+                newRow.style.transition = 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
+                newRow.style.opacity = '1';
+                newRow.style.transform = 'translateY(0) scale(1)';
+                newRow.style.background = 'transparent';
+            }, 100);
+            
+            // Clear form with animation
+            const form = document.getElementById('passwordForm');
+            form.style.transform = 'scale(0.98)';
+            setTimeout(() => {
+                form.reset();
+                form.style.transition = 'transform 0.3s ease';
+                form.style.transform = 'scale(1)';
+            }, 200);
+        }
+
+        // Scroll animations
+        function initScrollAnimations() {
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, observerOptions);
+
+            document.querySelectorAll('.scroll-animate').forEach(el => {
+                observer.observe(el);
+            });
+        }
+
+        // Ripple animation for buttons
+        function createRipple(event) {
+            const button = event.currentTarget;
+            const ripple = document.createElement('span');
+            const rect = button.getBoundingClientRect();
+            const size = Math.max(rect.width, rect.height);
+            const x = event.clientX - rect.left - size / 2;
+            const y = event.clientY - rect.top - size / 2;
+            
+            ripple.style.cssText = `
+                position: absolute;
+                border-radius: 50%;
+                background: rgba(255, 255, 255, 0.3);
+                width: ${size}px;
+                height: ${size}px;
+                left: ${x}px;
+                top: ${y}px;
+                transform: scale(0);
+                animation: ripple 0.6s ease-out;
+                pointer-events: none;
+                z-index: 1;
+            `;
+            
+            button.style.position = 'relative';
+            button.style.overflow = 'hidden';
+            button.appendChild(ripple);
+            
+            setTimeout(() => {
+                ripple.remove();
+            }, 600);
+        }
+
+        // Add CSS for ripple animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes ripple {
+                from {
+                    transform: scale(0);
+                    opacity: 1;
+                }
+                to {
+                    transform: scale(2);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Enhanced form validation
+        function validateForm() {
+            const website = document.getElementById('website');
+            const username = document.getElementById('username');
+            const password = document.getElementById('password');
+            
+            const inputs = [website, username, password];
+            let isValid = true;
+            
+            inputs.forEach(input => {
+                if (!input.value.trim()) {
+                    input.style.borderColor = '#ff6b6b';
+                    input.style.boxShadow = '0 0 0 4px rgba(255, 107, 107, 0.1)';
+                    isValid = false;
+                } else {
+                    input.style.borderColor = '#667eea';
+                    input.style.boxShadow = '0 0 0 4px rgba(102, 126, 234, 0.1)';
+                }
+            });
+            
+            return isValid;
+        }
+
+        // Password strength indicator
+        function checkPasswordStrength(password) {
+            let strength = 0;
+            const checks = [
+                password.length >= 8,
+                /[a-z]/.test(password),
+                /[A-Z]/.test(password),
+                /[0-9]/.test(password),
+                /[^a-zA-Z0-9]/.test(password)
+            ];
+            
+            strength = checks.filter(check => check).length;
+            
+            const colors = ['#ff6b6b', '#ff9f43', '#feca57', '#48dbfb', '#0abde3'];
+            const labels = ['Very Weak', 'Weak', 'Fair', 'Good', 'Strong'];
+            
+            return {
+                score: strength,
+                color: colors[strength - 1] || colors[0],
+                label: labels[strength - 1] || labels[0]
+            };
+        }
+
+        // Initialize everything when page loads
+        window.addEventListener('load', () => {
+            createParticles();
+            initScrollAnimations();
+            
+            // Add ripple effects to buttons
+            document.addEventListener('click', (e) => {
+                if (e.target.matches('.btn, .copy-btn, .delete-btn')) {
+                    createRipple(e);
+                }
+            });
+            
+            // Add real-time password strength checking
+            const passwordInput = document.getElementById('password');
+            let strengthIndicator = null;
+            
+            passwordInput.addEventListener('input', (e) => {
+                const password = e.target.value;
+                
+                if (!strengthIndicator) {
+                    strengthIndicator = document.createElement('div');
+                    strengthIndicator.style.cssText = `
+                        margin-top: 0.5rem;
+                        padding: 0.5rem;
+                        border-radius: 8px;
+                        font-size: 0.8rem;
+                        font-weight: 600;
+                        text-align: center;
+                        transition: all 0.3s ease;
+                    `;
+                    passwordInput.parentNode.appendChild(strengthIndicator);
+                }
+                
+                if (password) {
+                    const strength = checkPasswordStrength(password);
+                    strengthIndicator.style.background = strength.color + '20';
+                    strengthIndicator.style.color = strength.color;
+                    strengthIndicator.style.border = `1px solid ${strength.color}40`;
+                    strengthIndicator.textContent = `Password Strength: ${strength.label}`;
+                    strengthIndicator.style.opacity = '1';
+                } else {
+                    strengthIndicator.style.opacity = '0';
+                }
+            });
+            
+            // Smooth loading animation
+            setTimeout(() => {
+                document.querySelectorAll('.loading').forEach(el => {
+                    el.style.opacity = '1';
+                    el.style.transform = 'translateY(0)';
+                });
+            }, 100);
+        });
+
+        // Enhanced keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            // Ctrl/Cmd + K to focus search (if we had search)
+            if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+                e.preventDefault();
+                document.getElementById('website').focus();
+            }
+            
+            // Escape to clear form
+            if (e.key === 'Escape') {
+                document.getElementById('passwordForm').reset();
+                document.activeElement.blur();
+            }
+        });
+
+        // Auto-save draft (simulate with console.log)
+        let draftTimer;
+        document.getElementById('passwordForm').addEventListener('input', () => {
+            clearTimeout(draftTimer);
+            draftTimer = setTimeout(() => {
+                const formData = new FormData(document.getElementById('passwordForm'));
+                console.log('Draft saved:', Object.fromEntries(formData));
+            }, 1000);
+        });
+    </script>
+</body>
+</html>
